@@ -12,6 +12,25 @@ Vue.component('form-login', {
         login: false,
         register: true
       });
+    },
+    login() {
+      axios({
+        method: 'post',
+        url: baseUrl + '/login',
+        data: {
+          email: this.email,
+          password: this.password
+        }
+      })
+        .then(({ data }) => {
+          console.log(data.message);
+          this.email = '';
+          this.password = '';
+          this.$emit('success-login', true);
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
   },
   template: `
@@ -21,10 +40,10 @@ Vue.component('form-login', {
       <p class="h4 mb-4">Sign in</p>
       <input v-model="email" type="email" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="E-mail">
       <input v-model="password" type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password">
-      <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+      <button @click.prevent="login" class="btn btn-info btn-block my-4" type="submit">Sign in</button>
       
       <p>Not a member?
-        <a href="" @click.prevent="toogleRegister" >Register here</a>
+        <a href="" @click.prevent="toogleRegister">Register here</a>
       </p>
       <!-- Social login -->
       <p>or sign in with:</p>

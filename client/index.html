@@ -71,10 +71,10 @@
           <div class="row justify-content-center">
 
             <!-- form login -->
-            <form-login v-show="showFormLogin" :show-login=showFormLogin @register="register"></form-login>
+            <form-login v-show="showFormLogin" :show-login=showFormLogin @register="registerForm" @success-login="cokcok"></form-login>
 
             <!-- form register -->
-            <form-register v-show="showFormRegister" @login="login"></form-register>
+            <form-register v-show="showFormRegister" @login="loginForm"></form-register>
 
           </div>
         </div>
@@ -107,24 +107,25 @@
   <!-- CustomJS -->
   <!-- <script src="./js/main.js"></script> -->
   <script>
+    let baseUrl = 'http://localhost:3000';
     var app = new Vue({
       el: '#app',
-      components: {
-
-      },
       data: {
         isLogin: false,
         showFormLogin: true,
         showFormRegister: false,
       },
       methods: {
-        register(payload) {
+        registerForm(payload) {
           this.showFormLogin = payload.login;
           this.showFormRegister = payload.register;
         },
-        login(payload) {
+        loginForm(payload) {
           this.showFormLogin = payload.login;
           this.showFormRegister = payload.register;
+        },
+        cokcok(payload) {
+          this.isLogin = payload;
         }
       },
     });

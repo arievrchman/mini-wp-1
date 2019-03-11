@@ -1,9 +1,14 @@
-var express = require('express');
-var router = express.Router();
+var routes = require('express').Router();
+const { register, login, checkUser } = require('../controllers/user');
+const auth = require('../middlewares/authenticate');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+routes.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-module.exports = router;
+routes.post('/register', register);
+routes.post('/login', login);
+routes.get('/auth', auth, checkUser);
+
+module.exports = routes;
