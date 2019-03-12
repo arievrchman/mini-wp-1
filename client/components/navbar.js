@@ -1,6 +1,10 @@
 Vue.component('my-nav', {
   props: ['checkLogin'],
-  
+  methods: {
+    signOut() {
+      this.$emit('logout', false);
+    }
+  },
   template: `
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark darken-2">
 
@@ -31,7 +35,7 @@ Vue.component('my-nav', {
             <i class="fas fa-user"></i>
           </a>
           <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navUser">
-            <a class="dropdown-item" href="">Logout</a>
+            <a @click.prevent="signOut" class="dropdown-item" href="">Logout</a>
           </div>
         </li>
       </ul>

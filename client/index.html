@@ -38,7 +38,7 @@
 
   <div id="app">
 
-    <my-nav :check-login="isLogin"></my-nav>
+    <my-nav :check-login="isLogin" @logout="logout"></my-nav>
 
 
     <!-- Content -->
@@ -71,7 +71,7 @@
           <div class="row justify-content-center">
 
             <!-- form login -->
-            <form-login v-show="showFormLogin" :show-login=showFormLogin @register="registerForm" @success-login="cokcok"></form-login>
+            <form-login v-show="showFormLogin" :show-login=showFormLogin @register="registerForm" @success-login="login"></form-login>
 
             <!-- form register -->
             <form-register v-show="showFormRegister" @login="loginForm"></form-register>
@@ -105,31 +105,7 @@
   <script src="components/login.js"></script>
   <script src="components/register.js"></script>
   <!-- CustomJS -->
-  <!-- <script src="./js/main.js"></script> -->
-  <script>
-    let baseUrl = 'http://localhost:3000';
-    var app = new Vue({
-      el: '#app',
-      data: {
-        isLogin: false,
-        showFormLogin: true,
-        showFormRegister: false,
-      },
-      methods: {
-        registerForm(payload) {
-          this.showFormLogin = payload.login;
-          this.showFormRegister = payload.register;
-        },
-        loginForm(payload) {
-          this.showFormLogin = payload.login;
-          this.showFormRegister = payload.register;
-        },
-        cokcok(payload) {
-          this.isLogin = payload;
-        }
-      },
-    });
-  </script>
+  <script src="./js/main.js"></script>
 </body>
 
 </html>
