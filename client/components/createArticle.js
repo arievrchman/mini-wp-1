@@ -16,29 +16,27 @@ Vue.component('create-article', {
           title: this.title,
           content: this.text
         },
-        headers: { token }
+        headers: { token: localStorage.getItem('token') }
       })
-      .then(response => {
-        console.log(response.message);
-        this.title = '';
-        this.text = '';
-      })
-      .catch(err => {
-        console.log(err);
-      });
+        .then(response => {
+          console.log(response.message);
+          this.title = '';
+          this.text = '';
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   template: `
   <div style="width: 80%;" class="d-flex justify-content-center">
-    <form class="border-light p-5" @submit.prevent="createArticle">
+    <form class="border-light p-5 d-flex flex-column" @submit.prevent="createArticle">
       <p class="h4 mb-4 text-center">Add Article</p>
       <label for="title">Title :</label>
       <input v-model="title" type="text" class="form-control mb-4" placeholder="Title">
       <label for="content">Content :</label>
       <wysiwyg v-model="text" />
-      <div class="d-flex justify-content-center p-4">
-        <button class="btn btn-md btn-info justify-content-end" type="submit">Submit</button>
-      </div>
+      <button class="btn btn-md btn-info align-self-center mt-4" type="submit">Submit</button>
     </form>
   </div>
   `

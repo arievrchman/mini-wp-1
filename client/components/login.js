@@ -23,10 +23,9 @@ Vue.component('form-login', {
         }
       })
         .then(({ data }) => {
-          // console.log(data.token);
-          localStorage.setItem('token', data.token);
           this.email = '';
           this.password = '';
+          localStorage.setItem('token', data.token);
           this.$emit('success-login', true);
         })
         .catch(err => {

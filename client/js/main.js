@@ -1,5 +1,4 @@
 let baseUrl = 'http://localhost:3000';
-let token = localStorage.getItem('token');
 
 const app = new Vue({
   el: '#app',
@@ -11,13 +10,14 @@ const app = new Vue({
     createArticle: false,
     findMyArticles: false,
     articles: [],
+    filter: ''
   },
-  mounted() {
-    if (token) {
+  created() {
+    if (localStorage.getItem('token')) {
       axios({
         method: 'get',
         url: baseUrl + '/auth',
-        headers: { token }
+        headers: { token: localStorage.getItem('token') }
       })
         .then(response => {
           if (response) {
@@ -62,15 +62,32 @@ const app = new Vue({
       axios({
         method: 'get',
         url: baseUrl + '/articles',
-        headers: { token }
+        headers: { token: localStorage.getItem('token') }
       })
         .then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           this.articles = data;
         })
         .catch(err => {
           console.log(err);
         });
     },
+    testlah() {
+      axios({
+        method: 'get',
+        url: baseUrl + '/articles/search?title=' + this.filter,
+      })
+      .then(response => {
+        this.articles = response.data;
+        // console.log(response);
+      })
+    }
   },
+  // computed: {
+  //   aarticles() {
+  //     return this.articles.filter(e => {
+  //       return e.title == this.filter;
+  //     })
+  //   }
+  // },
 });

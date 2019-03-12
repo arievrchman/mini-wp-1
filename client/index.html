@@ -47,7 +47,7 @@
     <div v-if="isLogin" class="d-flex" style="height: 100vh;">
       <!-- Sidebar -->
       <div class="col-2 h-100 border-right border-light">
-        <h1>htes</h1>
+        <h1>yadah</h1>
       </div>
 
       <div class="col-10">
@@ -72,8 +72,11 @@
           <create-article></create-article>
         </div>
 
-        <div v-else-if="findMyArticles" class="d-flex">
-          <my-article></my-article>
+        <div v-else-if="findMyArticles" class="d-flex flex-wrap">
+          <input v-model="filter" v-on:keyup.enter="testlah" class="form-control my-4 mx-2" type="text"
+            placeholder="Search" aria-label="Search">
+          
+          <my-article v-for="(article, index) in articles" :key="index" :article="article"></my-article>
         </div>
       </div>
     </div>
