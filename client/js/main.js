@@ -1,11 +1,16 @@
 let baseUrl = 'http://localhost:3000';
 let token = localStorage.getItem('token');
-var app = new Vue({
+
+const app = new Vue({
   el: '#app',
   data: {
     isLogin: false,
     showFormLogin: true,
     showFormRegister: false,
+    homepage: true,
+    createArticle: false,
+    findMyArticles: false,
+    articles: [],
   },
   mounted() {
     if (token) {
@@ -15,7 +20,6 @@ var app = new Vue({
         headers: { token }
       })
         .then(response => {
-          // console.log(response);
           if (response) {
             this.isLogin = true;
           }
@@ -40,6 +44,33 @@ var app = new Vue({
     logout(payload) {
       localStorage.removeItem('token');
       this.isLogin = payload
-    }
+    },
+    goToHomePage(payload) {
+      this.homepage = payload.homepage;
+      this.createArticle = payload.createArticle;
+    },
+    createNewArticle() {
+      this.createArticle = true;
+      this.homepage = false;
+      this.findMyArticles = false;
+    },
+    myArticles() {
+      this.findMyArticles = true;
+      this.createArticle = false;
+      this.homepage = false;
+
+      axios({
+        method: 'get',
+        url: baseUrl + '/articles',
+        headers: { token }
+      })
+        .then(({ data }) => {
+          console.log(data);
+          this.articles = data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
   },
 });

@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var articlesRouter = require('./routes/articles');
 
 let db_connection = 'mongodb://localhost/zapress';
 mongoose.connect(db_connection, { useNewUrlParser: true });
@@ -23,6 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/articles', articlesRouter);
 
 module.exports = app;

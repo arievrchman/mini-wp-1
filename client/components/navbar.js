@@ -3,6 +3,12 @@ Vue.component('my-nav', {
   methods: {
     signOut() {
       this.$emit('logout', false);
+    },
+    toHomePage() {
+      this.$emit('to-home-page', {
+        homepage: true,
+        createArticle: false
+      })
     }
   },
   template: `
@@ -15,7 +21,7 @@ Vue.component('my-nav', {
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
+        <li class="nav-item" @click.prevent="toHomePage">
           <a class="nav-link" href="">Dashboard</a>
         </li>
         <li class="nav-item">

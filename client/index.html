@@ -12,6 +12,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
   <!-- Material Design Bootstrap -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/css/mdb.min.css" rel="stylesheet">
+  <!-- Wyswyg -->
+  <link rel="stylesheet" href="./css/wyswyg.css">
   <style>
     * {
       padding: 0;
@@ -38,32 +40,47 @@
 
   <div id="app">
 
-    <my-nav :check-login="isLogin" @logout="logout"></my-nav>
+    <my-nav :check-login="isLogin" @logout="logout" @to-home-page="goToHomePage"></my-nav>
 
 
-    <!-- Content -->
-    <div v-if="isLogin" class="row" style="padding: 60px 0;">
-      <div class="col-2">
-
+    <!-- Page -->
+    <div v-if="isLogin" class="d-flex" style="height: 100vh;">
+      <!-- Sidebar -->
+      <div class="col-2 h-100 border-right border-light">
+        <h1>htes</h1>
       </div>
-      <div class="col-10 jumbotron">
-        <div class="row text-center">
-          <div class="col-md-6">
-            <h2>Create Post</h2>
-            <img class="imgbanner img-fluid" src="./src/undraw_personal_site_xyd1.png" alt="" srcset="">
-            <p><a class="mt-3 btn btn-secondary" href="#" role="button">Create &raquo;</a></p>
+
+      <div class="col-10">
+        <div v-if="homepage" class="jumbotron jumbotron-fluid mt-3">
+          <div class="row text-center">
+            <div class="col-md-6">
+              <h2>Create Article</h2>
+              <img class="imgbanner img-fluid" src="./src/undraw_personal_site_xyd1.png" alt="" srcset="">
+              <p><a class="mt-3 btn btn-md btn-outline-dark rounded" href="#" role="button"
+                  @click.prevent="createNewArticle">Create &raquo;</a></p>
+            </div>
+            <div class="col-md-6">
+              <h2>My Articles</h2>
+              <img class="imgbanner img-fluid" src="./src/undraw_choice_9385.png" alt="" srcset="">
+              <p><a class="mt-3 btn btn-md btn-outline-dark rounded" href="#" role="button"
+                  @click.prevent="myArticles">View &raquo;</a></p>
+            </div>
           </div>
-          <div class="col-md-6">
-            <h2>My Post</h2>
-            <img class="imgbanner img-fluid" src="./src/undraw_choice_9385.png" alt="" srcset="">
-            <p><a class="mt-3 btn btn-secondary" href="#" role="button">View &raquo;</a></p>
-          </div>
+        </div>
+
+        <div v-else-if="createArticle" class="w-100 d-flex justify-content-center">
+          <create-article></create-article>
+        </div>
+
+        <div v-else-if="findMyArticles" class="d-flex">
+          <my-article></my-article>
         </div>
       </div>
     </div>
+    <!-- Page -->
 
-    <div v-else class="row">
-      <div class="col-2 he-100 border-right">
+    <div v-else class="d-flex" style="height: 100vh;">
+      <div class="col-2 border-right">
 
       </div>
       <div class="col-10">
@@ -71,7 +88,8 @@
           <div class="row justify-content-center">
 
             <!-- form login -->
-            <form-login v-show="showFormLogin" :show-login=showFormLogin @register="registerForm" @success-login="login"></form-login>
+            <form-login v-show="showFormLogin" :show-login=showFormLogin @register="registerForm"
+              @success-login="login"></form-login>
 
             <!-- form register -->
             <form-register v-show="showFormRegister" @login="loginForm"></form-register>
@@ -82,7 +100,6 @@
     </div>
   </div>
 
-  <!-- Content -->
 
   </div>
 
@@ -100,10 +117,14 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <!-- Axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- Wyswyg -->
+  <script src="./components/wysiwyg.js"></script>
   <!-- Components -->
   <script src="components/navbar.js"></script>
   <script src="components/login.js"></script>
   <script src="components/register.js"></script>
+  <script src="components/createArticle.js"></script>
+  <script src="components/myArticle.js"></script>
   <!-- CustomJS -->
   <script src="./js/main.js"></script>
 </body>

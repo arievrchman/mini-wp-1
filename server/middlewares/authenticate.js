@@ -9,7 +9,6 @@ module.exports = (req, res, next) => {
       if (err) {
         res.status(400).json(err.message);
       } else {
-        console.log(decoded);
         req.auth_user = decoded;
         next();
       }
