@@ -12,124 +12,209 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
   <!-- Material Design Bootstrap -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/css/mdb.min.css" rel="stylesheet">
-  <!-- Wyswyg -->
-  <link rel="stylesheet" href="./css/wyswyg.css">
-  <style>
-    * {
-      padding: 0;
-      margin: 0;
-    }
-
-    .imgbanner {
-      height: 150px;
-      width: auto;
-    }
-
-    .footer {
-      /* background-color: #f5f5f5; */
-    }
-
-    .footer>.container {
-      /* padding-right: 15px; */
-      /* padding-left: 15px; */
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/wysiwyg.css">
 </head>
 
 <body>
 
   <div id="app">
 
-    <my-nav :check-login="isLogin" @logout="logout" @to-home-page="goToHomePage"></my-nav>
-
-
-    <!-- Page -->
-    <div v-if="isLogin" class="d-flex" style="height: 100vh;">
-      <!-- Sidebar -->
-      <div class="col-2 h-100 border-right border-light">
-        <h1>yadah</h1>
-      </div>
-
-      <div class="col-10">
-        <div v-if="homepage" class="jumbotron jumbotron-fluid mt-3">
-          <div class="row text-center">
-            <div class="col-md-6">
-              <h2>Create Article</h2>
-              <img class="imgbanner img-fluid" src="./src/undraw_personal_site_xyd1.png" alt="" srcset="">
-              <p><a class="mt-3 btn btn-md btn-outline-dark rounded" href="#" role="button"
-                  @click.prevent="createNewArticle">Create &raquo;</a></p>
-            </div>
-            <div class="col-md-6">
-              <h2>My Articles</h2>
-              <img class="imgbanner img-fluid" src="./src/undraw_choice_9385.png" alt="" srcset="">
-              <p><a class="mt-3 btn btn-md btn-outline-dark rounded" href="#" role="button"
-                  @click.prevent="myArticles">View &raquo;</a></p>
+    <!-- Nav -->
+    <nav class="navbar navbar-expand-lg navbar-light white shadow-sm">
+      <div class="container">
+        <a class="navbar-brand">
+          <span class="my-brand">Zappress</span>
+        </a>
+        <div class="collapse navbar-collapse">
+          <div class="navbar-nav d-flex flex-column w-100">
+            <a v-if="!isLogin" class="nav-item nav-link align-self-end btn btn-md btn-outline-info rounded"
+              data-toggle="modal" data-target="#getStarted" href="#">
+              <span style="text-transform: none; font-size: 13px;" class="px-3">Get Started</span>
+            </a>
+            <a v-else class="nav-link p-0 align-self-end dropdown-toggle" id="userDropDown" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg" class="rounded-circle z-depth-0"
+                alt="avatar image" height="35">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-secondary" aria-labelledby="userDropDown"
+              style="width: 100px;">
+              <a class="dropdown-item" href="" @click.prevent="createNewArticle">New Article</a>
+              <a class="dropdown-item" href="" @click.prevent="">My Articles</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="" @click.prevent="signOut">Signout</a>
             </div>
           </div>
         </div>
+      </div>
+    </nav>
+    <!-- Nav -->
 
-        <div v-else-if="createArticle" class="w-100 d-flex justify-content-center">
-          <create-article></create-article>
-        </div>
-
-        <div v-else-if="findMyArticles" class="d-flex flex-wrap">
-          <input v-model="filter" v-on:keyup.enter="testlah" class="form-control my-4 mx-2" type="text"
-            placeholder="Search" aria-label="Search">
-          
-          <my-article v-for="(article, index) in articles" :key="index" :article="article"></my-article>
-        </div>
+    <!-- Tags -->
+    <div class="tags-bar">
+      <div class="container">
+        <nav class="nav text-center font-weight-bolder">
+          <ul class="nav white lighten-4 py-1">
+            <li class="nav-item active">
+              <a class="nav-link text-muted" href="#!">Some tags</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted" href="#!">Some tags</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted" href="#!">Some tags</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted" href="#!">Some tags</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted" href="#!">Some tags</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted" href="#!">Some tags</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-muted" href="#!">Some tags</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
-    <!-- Page -->
+    <!-- Tags -->
 
-    <div v-else class="d-flex" style="height: 100vh;">
-      <div class="col-2 border-right">
+    <main role="main">
 
-      </div>
-      <div class="col-10">
-        <div class="container my-4">
-          <div class="row justify-content-center">
+      <!-- Home -->
+      <home-section v-show="mainContent"></home-section>
 
-            <!-- form login -->
-            <form-login v-show="showFormLogin" :show-login=showFormLogin @register="registerForm"
-              @success-login="login"></form-login>
+      <!-- Read Article -->
+      <read-article style="display: none"></read-article>
 
-            <!-- form register -->
-            <form-register v-show="showFormRegister" @login="loginForm"></form-register>
+      <create-article v-show="switchToNewArticle"></create-article>
 
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
+
+    <!-- Modal Intro-->
+    <get-started @submit-login="submitLogin"></get-started>
+    <!-- Modal Intro -->
+
   </div>
 
 
-  </div>
 
-  <!-- JQuery -->
+  <!-- MDBootstrap -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <!-- Bootstrap tooltips -->
   <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-  <!-- Bootstrap core JavaScript -->
   <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <!-- MDB core JavaScript -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.4/js/mdb.min.js"></script>
-  <!-- Vue -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <!-- Axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <!-- Wyswyg -->
-  <script src="./components/wysiwyg.js"></script>
-  <!-- Components -->
-  <script src="components/navbar.js"></script>
-  <script src="components/login.js"></script>
-  <script src="components/register.js"></script>
-  <script src="components/createArticle.js"></script>
-  <script src="components/myArticle.js"></script>
-  <!-- CustomJS -->
-  <script src="./js/main.js"></script>
+  <!--Google SignIn -->
+  <script src="https://apis.google.com/js/platform.js?onload=initialize" async defer></script>
+  <!-- Vue.js-->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-input-tag"></script>
+  <!-- Wysiwyg -->
+  <script src="./js/wysiwyg.js"></script>
+  <!-- Main Components -->
+  <script src="js/components/get-started.js"></script>
+  <script src="js/components/home-section.js"></script>
+  <script src="js/components/create-article.js"></script>
+  <script src="js/components/read-articles.js"></script>
+  <!-- Modal-body Components-->
+  <script src="js/components/modal-body/intro.js"></script>
+  <script src="js/components/modal-body/login.js"></script>
+  <script src="js/components/modal-body/signup.js"></script>
+
+  <script>
+    function initialize() {
+      gapi.load('auth2', function () {
+        gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
+          .then(() => {
+            renderButton();
+          });
+      });
+    }
+    function renderButton() {
+
+      gapi.signin2.render('googleSignIn', {
+        'scope': 'profile email',
+        'width': 233,
+        'height': 50,
+        'longtitle': true,
+        'onsuccess': onSuccess
+      });
+    }
+    function onSuccess(googleUser) {
+      console.log('Logged in as: ' + googleUser.getBasicProfile());
+      // console.log(googleUser.getAuthResponse().id_token);
+    }
+
+    let baseUrl = 'http://localhost:3000';
+
+    const app = new Vue({
+      el: '#app',
+      // components: {
+      //   'input-tag': vueInputTag.default,
+      //   wysiwyg: vueWysiwyg.default.component,
+      // },
+      data: {
+        isLogin: false,
+
+        modalIntro: true,
+        modalLogin: false,
+        modalRegister: false,
+
+        mainContent: false,
+        switchToNewArticle: true,
+
+        tags: [],
+        text: ''
+      },
+      created() {
+        if (localStorage.getItem('token')) {
+          this.checkUser();
+        }
+      },
+      mounted() {
+
+      },
+      methods: {
+        initGoogle() {
+
+        },
+        submitLogin(payload) {
+          // console.log(payload);
+          this.isLogin = payload;
+          this.checkUser();
+        },
+        checkUser() {
+          axios({
+            method: 'get',
+            url: baseUrl + '/auth',
+            headers: { token: localStorage.getItem('token') }
+          })
+            .then(({ data }) => {
+              // console.log(data);              
+              this.isLogin = true;
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        },
+        signOut() {
+          localStorage.removeItem('token');
+          this.isLogin = false;
+        },
+        createNewArticle() {
+          this.switchToNewArticle = true;
+          this.mainContent = false;
+        }
+      },
+    });
+  </script>
 </body>
 
 </html>

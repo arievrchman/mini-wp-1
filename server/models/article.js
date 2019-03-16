@@ -3,20 +3,22 @@ const Schema = mongoose.Schema;
 
 let articleSchema = new Schema({
   author: {
-    type: Schema.Types.ObjectId
+    type: Schema.Types.ObjectId,
+    ref: 'user'
   },
   title: {
     type: String,
     required: [true, 'title cannot be empty']
   },
   tags: {
-    type: [ Schema.Types.ObjectId ]
+    type: [ Schema.Types.ObjectId ],
+    ref: 'tag'
   },
   content: {
     type: String,
-    required: [true, 'description cannot be empty']
+    required: [true, 'content cannot be empty']
   },
-  feature_iamge: {
+  feature_image: {
     type: String
   },
   created_at: {

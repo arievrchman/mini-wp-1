@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz');
+
+body {
+  background-color: #fff;
+}
+
+.my-brand {
+  font-weight: bold;
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  font-size: 25px;
+  letter-spacing: 2px;
+}
+
+.modal-body h5 {
+  font-weight: 700;
+  font-size: 32px;
+  color: #000;
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  margin-bottom: 12px;
+}
+
+.vue-input-tag-wrapper {
+  border: none !important;
+}

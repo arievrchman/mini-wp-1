@@ -9,11 +9,12 @@ const cors = require('cors');
 var indexRouter = require('./routes/index');
 var articlesRouter = require('./routes/articles');
 
+var app = express();
+
 let db_connection = 'mongodb://localhost/zapress';
 mongoose.connect(db_connection, { useNewUrlParser: true });
-mongoose.connection.on('open', () => console.log('DB Connected!')).once('error', (error) => console.log('connection error:', error));
+mongoose.connection.once('open', () => console.log('DB Connected!')).on('error', (error) => console.log('connection error:', error));
 
-var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());

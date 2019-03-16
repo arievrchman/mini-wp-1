@@ -2,27 +2,29 @@ const Article = require('../models/article');
 
 module.exports = {
   createArticle(req, res) {
+    console.log('masuuuk');
+    console.log(req.file);
     let newArticle = {
       title: req.body.title,
       content: req.body.content,
     };
-    Article.create(newArticle)
-      .then(article => {
-        res.status(201).json({
-          article,
-          message: 'successfully create article'
-        })
-      })
-      .catch(err => {
-        let error = err.errors;
-        if (error.hasOwnProperty('title')) {
-          res.status(400).json(error.title.message);
-        } else if (error.hasOwnProperty('content')) {
-          res.status(400).json(error.content.message);
-        } else {
-          res.status(500).json(err);
-        }
-      });
+    // Article.create(newArticle)
+    //   .then(article => {
+    //     res.status(201).json({
+    //       article,
+    //       message: 'successfully create article'
+    //     })
+    //   })
+    //   .catch(err => {
+    //     let error = err.errors;
+    //     if (error.hasOwnProperty('title')) {
+    //       res.status(400).json(error.title.message);
+    //     } else if (error.hasOwnProperty('content')) {
+    //       res.status(400).json(error.content.message);
+    //     } else {
+    //       res.status(500).json(err);
+    //     }
+    //   });
   },
   findAllArticle(req, res) {
     Article

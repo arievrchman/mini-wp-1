@@ -1,6 +1,7 @@
 .editr {
   border: 1px solid #e4e4e4;
   width: 100%;
+  height: 300px;
 }
 .editr--toolbar {
   background: #f6f6f6;
