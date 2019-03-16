@@ -2,11 +2,20 @@ const Article = require('../models/article');
 const Tag = require('../models/tag');
 
 module.exports = {
-  createArticle(req, res) {    
+  createArticle(req, res) {
+    // console.log(req.auth_user);
 
     let tags = req.body.tags.split(',');
     let arrayTag = [];
-    
+    let sendTags = [];
+    let img;
+
+    if (req.file) {
+      img = req.file.cloudStoragePublicUrl
+    } else {
+      img = process.env.NOT_FOUND
+    }
+
     for (let i = 0; i < tags.length; i++) {
       const tag = tags[i];
       let tmpTag = new Promise((resolve, reject) => {
@@ -32,13 +41,6 @@ module.exports = {
       arrayTag.push(tmpTag);
     }
 
-    let sendTags = [];
-    let img; 
-    if (req.file) {
-      img = req.file.cloudStoragePublicUrl
-    } else {
-      img = process.env.NOT_FOUND
-    }
     Promise
       .all(arrayTag)
       .then(tags => {
@@ -47,6 +49,7 @@ module.exports = {
           return tag.id;
         });
         let newArticle = {
+          author: req.auth_user.id,
           title: req.body.title,
           content: req.body.content,
           tags: tagId,
@@ -54,38 +57,37 @@ module.exports = {
         };
         return Article.create(newArticle);
       })
-    .then(article => {
-      // console.log(article, '==========>');
-      let sendArticleToClient = {
-        id: article._id,
-        title: article.title,
-        tags: sendTags,
-        content: article.content,
-        created_at: article.created_at,
-        featured_image: article.featured_image
-      }
-      res.status(201).json({
-        sendArticleToClient,
-        message: 'successfully create article'
+      .then(article => {
+        // console.log(article, '==========>');
+        let sendArticleToClient = {
+          id: article._id,
+          author: article.name,
+          title: article.title,
+          tags: sendTags,
+          content: article.content,
+          created_at: article.created_at,
+          featured_image: article.featured_image
+        }
+        res.status(201).json({
+          sendArticleToClient,
+          message: 'successfully create article'
+        })
       })
-    })
-    .catch(err => {
-      let error = err.errors;
-      console.log(err);
-      if (error.hasOwnProperty('title')) {
-        res.status(400).json(error.title.message);
-      } else if (error.hasOwnProperty('content')) {
-        res.status(400).json(error.content.message);
-      } else {
-        res.status(500).json(err);
-      }
-    });
+      .catch(err => {
+        let error = err.errors;
+        if (error.hasOwnProperty('title')) {
+          res.status(400).json(error.title.message);
+        } else if (error.hasOwnProperty('content')) {
+          res.status(400).json(error.content.message);
+        } else {
+          res.status(500).json(err);
+        }
+      });
 
   },
   findAllArticle(req, res) {
     Article
-      .find({}).sort('created_at')
-      .populate('tag')
+      .find({}).sort([['created_at', 'descending']])
       .then(articles => {
         res.json(articles);
       })
@@ -143,5 +145,18 @@ module.exports = {
   },
   findAuthorArticle(req, res) {
 
+  },
+  findNewestArticle(req, res) {
+    Article
+      .find({})
+      .sort({ created_at: 'desc' })
+      .populate('author', '-password')
+      .limit(5)
+      .then(articles => {
+        res.json(articles);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
   }
 };

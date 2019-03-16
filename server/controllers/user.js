@@ -38,6 +38,7 @@ module.exports = {
           let isValid = compare(req.body.password, user.password);
           if (isValid) {
             let payload = {
+              id: user._id,
               name: user.name,
               email: user.email
             };

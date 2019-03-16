@@ -55,26 +55,8 @@
       <div class="container">
         <nav class="nav text-center font-weight-bolder">
           <ul class="nav white lighten-4 py-1">
-            <li class="nav-item active">
-              <a class="nav-link text-muted" href="#!">Some tags</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-muted" href="#!">Some tags</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-muted" href="#!">Some tags</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-muted" href="#!">Some tags</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-muted" href="#!">Some tags</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-muted" href="#!">Some tags</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-muted" href="#!">Some tags</a>
+            <li v-for="(tag, index) in tags" :key="index" class="nav-item active">
+              <a class="nav-link text-muted" href="" @click.prevent="findArticleByTags(tag)">{{ tag.tagName }}</a>
             </li>
           </ul>
         </nav>
@@ -85,14 +67,17 @@
     <main role="main">
 
       <!-- Home -->
-      <home-section v-show="mainContent"></home-section>
+      <home-section v-show="mainContent" :all-articles="newArticles"></home-section>
 
       <!-- Read Article -->
-      <read-article style="display: none"></read-article>
+      <read-article v-show="switchToReadArticle"></read-article>
 
+      <!-- Create Article -->
       <create-article v-show="switchToNewArticle"></create-article>
 
     </main>
+
+
 
     <!-- Modal Intro-->
     <get-started @submit-login="submitLogin"></get-started>
@@ -112,7 +97,7 @@
   <!-- Axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!--Google SignIn -->
-  <script src="https://apis.google.com/js/platform.js?onload=initialize" async defer></script>
+  <script src="https://apis.google.com/js/platform.js"></script>
   <!-- Swal! -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
   <!-- Vue.js-->
@@ -120,6 +105,8 @@
   <script src="https://unpkg.com/vue-input-tag"></script>
   <!-- Wysiwyg -->
   <script src="./js/wysiwyg.js"></script>
+  <!-- Vue filter -->
+  <script src="https://cdn.jsdelivr.net/npm/vue2-filters/dist/vue2-filters.min.js"></script>
   <!-- Main Components -->
   <script src="js/components/get-started.js"></script>
   <script src="js/components/home-section.js"></script>
@@ -131,16 +118,16 @@
   <script src="js/components/modal-body/signup.js"></script>
 
   <script>
+
     function initialize() {
-      gapi.load('auth2', function () {
-        gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
-          .then(() => {
-            renderButton();
-          });
-      });
+      // gapi.load('auth2', function () {
+      //   gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
+      //     .then(() => {
+      //       renderButton();
+      //     });
+      // });
     }
     function renderButton() {
-
       gapi.signin2.render('googleSignIn', {
         'scope': 'profile email',
         'width': 233,
@@ -158,10 +145,6 @@
 
     const app = new Vue({
       el: '#app',
-      // components: {
-      //   'input-tag': vueInputTag.default,
-      //   wysiwyg: vueWysiwyg.default.component,
-      // },
       data: {
         isLogin: false,
 
@@ -169,11 +152,12 @@
         modalLogin: false,
         modalRegister: false,
 
-        mainContent: false,
-        switchToNewArticle: true,
+        mainContent: true,
+        switchToNewArticle: false,
+        switchToReadArticle: false,
 
         tags: [],
-        text: ''
+        newArticles: [],
       },
       created() {
         if (localStorage.getItem('token')) {
@@ -181,11 +165,24 @@
         }
       },
       mounted() {
-
+        gapi.load('auth2', function () {
+          gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
+            .then(() => {
+              renderButton();
+            });
+        });
+        this.findTags();
+        this.findNewArticles();
       },
       methods: {
-        initGoogle() {
-
+        renderButton() {
+          gapi.signin2.render('googleSignIn', {
+            'scope': 'profile email',
+            'width': 233,
+            'height': 50,
+            'longtitle': true,
+            'onsuccess': onSuccess
+          });
         },
         submitLogin(payload) {
           // console.log(payload);
@@ -199,7 +196,7 @@
             headers: { token: localStorage.getItem('token') }
           })
             .then(({ data }) => {
-              // console.log(data);              
+              // console.log(data);
               this.isLogin = true;
             })
             .catch(err => {
@@ -213,6 +210,35 @@
         createNewArticle() {
           this.switchToNewArticle = true;
           this.mainContent = false;
+        },
+        findNewArticles() {
+          axios({
+            method: 'get',
+            url: baseUrl + '/articles/newest'
+          })
+            .then(({ data }) => {
+              console.log(data);
+              this.newArticles = data;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        },
+        findTags() {
+          axios({
+            method: 'get',
+            url: baseUrl + '/tags'
+          })
+            .then(({ data }) => {
+              // console.log(data);
+              this.tags = data;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        },
+        findArticleByTags(tag) {
+
         }
       },
     });

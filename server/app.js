@@ -1,15 +1,16 @@
 require('dotenv').config();
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-var indexRouter = require('./routes/index');
-var articlesRouter = require('./routes/articles');
+const indexRouter = require('./routes/index');
+const articlesRouter = require('./routes/articles');
+const tagsRouter = require('./routes/tags');
 
-var app = express();
+const app = express();
 
 let db_connection = 'mongodb://localhost/zapress';
 mongoose.connect(db_connection, { useNewUrlParser: true });
@@ -25,5 +26,6 @@ app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/articles', articlesRouter);
+app.use('/tags', tagsRouter);
 
 module.exports = app;
