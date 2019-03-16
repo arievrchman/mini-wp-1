@@ -23,7 +23,7 @@
     <!-- Nav -->
     <nav class="navbar navbar-expand-lg navbar-light white shadow-sm">
       <div class="container">
-        <a class="navbar-brand">
+        <a class="navbar-brand" @click.prevent="switchToHome">
           <span class="my-brand">Zappress</span>
         </a>
         <div class="collapse navbar-collapse">
@@ -67,10 +67,17 @@
     <main role="main">
 
       <!-- Home -->
-      <home-section v-show="mainContent" :all-articles="newArticles"></home-section>
+      <home-section
+        v-show="mainContent"
+        :all-articles="newArticles"
+        @read-article="readArticle">
+      </home-section>
 
       <!-- Read Article -->
-      <read-article v-show="switchToReadArticle"></read-article>
+      <read-article
+        v-show="switchToReadArticle"
+        :current-article="currentArticle">
+      </read-article>
 
       <!-- Create Article -->
       <create-article v-show="switchToNewArticle"></create-article>
@@ -158,6 +165,7 @@
 
         tags: [],
         newArticles: [],
+        currentArticle: {},
       },
       created() {
         if (localStorage.getItem('token')) {
@@ -211,6 +219,12 @@
           this.switchToNewArticle = true;
           this.mainContent = false;
         },
+        readArticle(article) {
+          console.log(article);
+          this.currentArticle = article;
+          this.switchToReadArticle = true;
+          this.mainContent = false;
+        },
         findNewArticles() {
           axios({
             method: 'get',
@@ -239,6 +253,11 @@
         },
         findArticleByTags(tag) {
 
+        },
+        switchToHome() {
+          this.mainContent = true;
+          this.switchToNewArticle = false;
+          this.switchToReadArticle = false;
         }
       },
     });

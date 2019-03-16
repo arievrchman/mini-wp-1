@@ -25,6 +25,9 @@ Vue.component('home-section', {
 
       return day + ' ' + monthNames[monthIndex] + ' ' + year;
     },
+    readArticle(article) {
+      this.$emit('read-article', article);
+    },
     // strippedContent(val) {
     //   let regex = /(<([^>]+)>)|&nbsp;|&quot;/ig;
     //   return val.replace(regex, "");
@@ -52,10 +55,10 @@ Vue.component('home-section', {
                 <a><div class="mask rgba-white-slight"></div></a>
               </div>
               <div class="card-body">
-                <h4 class="card-title">{{ firstArticle.title }}</h4>
+                <h4 class="card-title"><strong>{{ firstArticle.title }}</strong></h4>
                 <hr>
                 <p class="card-text" style="max-height: 100px;">{{ firstArticle.content | truncate(100) }}</p>
-                <a href="" class="black-text d-flex justify-content-end">
+                <a @click.prevent="readArticle(firstArticle)" href="" class="black-text d-flex justify-content-end">
                   <h6>Read more <i class="fas fa-angle-double-right"></i></h6>
                 </a>
               </div>
@@ -77,7 +80,9 @@ Vue.component('home-section', {
               </div>
               <div class="col-lg-7 col-xl-7">
                 <!-- Post title -->
-                <h6 class="font-weight-bold mb-3"><strong>{{ newArt.title }}</strong></h6>
+                <a href="" @click.prevent="readArticle(newArt)" style="color: #303030">
+                  <h6 class="font-weight-bold mb-3"><strong>{{ newArt.title }}</strong></h6>
+                </a>
                 <!-- Post data -->
                 <p style="margin-bottom: 0px !important">
                   <strong>
@@ -93,10 +98,7 @@ Vue.component('home-section', {
           </div>
 
           <div class="col-md-4">
-            <!-- Card Light -->
             <div class="single-news">
-
-              <!-- Card image -->
               <div class="view overlay">
                 <img class="card-img-top"
                   :src="fifthArticle.featured_image"
@@ -106,18 +108,15 @@ Vue.component('home-section', {
                 </a>
               </div>
 
-              <!-- Card content -->
               <div class="card-body">
-                <h4 class="card-title">{{ fifthArticle.title }}</h4>
+                <h4 class="card-title"><strong>{{ fifthArticle.title }}</strong></h4>
                 <hr>
                 <p class="card-text">{{ fifthArticle.content | truncate(100) }}</p>
-                <!-- Link -->
-                <a href="" class="black-text d-flex justify-content-end">
+                <a @click.prevent="readArticle(fifthArticle)" href="" class="black-text d-flex justify-content-end">
                   <h6>Read more <i class="fas fa-angle-double-right"></i></h6>
                 </a>
               </div>
             </div>
-            <!-- Card Light -->
           </div>
 
         </div>
