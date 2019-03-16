@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz');
+@import url('https://fonts.googleapis.com/css?family=ZCOOL+XiaoWei');
 
 body {
   background-color: #fff;
@@ -21,4 +22,11 @@ body {
 
 .vue-input-tag-wrapper {
   border: none !important;
+}
+.vue-input-tag-wrapper .input-tag {
+  border: 1px solid grey !important;
+  font-size: 15px !important;
+  color: gray !important;
+  background-color: #fff !important;
+  font-family: 'ZCOOL XiaoWei', serif;
 }

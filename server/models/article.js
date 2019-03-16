@@ -18,7 +18,7 @@ let articleSchema = new Schema({
     type: String,
     required: [true, 'content cannot be empty']
   },
-  feature_image: {
+  featured_image: {
     type: String
   },
   created_at: {

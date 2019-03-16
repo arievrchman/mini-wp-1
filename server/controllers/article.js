@@ -1,34 +1,91 @@
 const Article = require('../models/article');
+const Tag = require('../models/tag');
 
 module.exports = {
-  createArticle(req, res) {
-    console.log('masuuuk');
-    console.log(req.file);
-    let newArticle = {
-      title: req.body.title,
-      content: req.body.content,
-    };
-    // Article.create(newArticle)
-    //   .then(article => {
-    //     res.status(201).json({
-    //       article,
-    //       message: 'successfully create article'
-    //     })
-    //   })
-    //   .catch(err => {
-    //     let error = err.errors;
-    //     if (error.hasOwnProperty('title')) {
-    //       res.status(400).json(error.title.message);
-    //     } else if (error.hasOwnProperty('content')) {
-    //       res.status(400).json(error.content.message);
-    //     } else {
-    //       res.status(500).json(err);
-    //     }
-    //   });
+  createArticle(req, res) {    
+
+    let tags = req.body.tags.split(',');
+    let arrayTag = [];
+    
+    for (let i = 0; i < tags.length; i++) {
+      const tag = tags[i];
+      let tmpTag = new Promise((resolve, reject) => {
+        Tag
+          .findOne({
+            tagName: tag
+          })
+          .then(result => {
+            if (result) {
+              resolve(result);
+            } else {
+              return Tag
+                .create({ tagName: tag })
+                .then(result => {
+                  resolve(result);
+                });
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+      arrayTag.push(tmpTag);
+    }
+
+    let sendTags = [];
+    let img; 
+    if (req.file) {
+      img = req.file.cloudStoragePublicUrl
+    } else {
+      img = process.env.NOT_FOUND
+    }
+    Promise
+      .all(arrayTag)
+      .then(tags => {
+        sendTags = tags;
+        let tagId = tags.map(tag => {
+          return tag.id;
+        });
+        let newArticle = {
+          title: req.body.title,
+          content: req.body.content,
+          tags: tagId,
+          featured_image: img
+        };
+        return Article.create(newArticle);
+      })
+    .then(article => {
+      // console.log(article, '==========>');
+      let sendArticleToClient = {
+        id: article._id,
+        title: article.title,
+        tags: sendTags,
+        content: article.content,
+        created_at: article.created_at,
+        featured_image: article.featured_image
+      }
+      res.status(201).json({
+        sendArticleToClient,
+        message: 'successfully create article'
+      })
+    })
+    .catch(err => {
+      let error = err.errors;
+      console.log(err);
+      if (error.hasOwnProperty('title')) {
+        res.status(400).json(error.title.message);
+      } else if (error.hasOwnProperty('content')) {
+        res.status(400).json(error.content.message);
+      } else {
+        res.status(500).json(err);
+      }
+    });
+
   },
   findAllArticle(req, res) {
     Article
       .find({}).sort('created_at')
+      .populate('tag')
       .then(articles => {
         res.json(articles);
       })
@@ -85,6 +142,6 @@ module.exports = {
       });
   },
   findAuthorArticle(req, res) {
-    
+
   }
 };

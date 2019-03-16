@@ -17,12 +17,12 @@ Vue.component('create-article', {
       this.file = this.$refs.file.files[0];
     },
     addArticle() {
+
       let formData = new FormData();
       formData.append('title', this.title);
-      // formData.append('tags', this.tags);
-      // formData.append('file', this.file);
+      formData.append('tags', this.tags);
+      formData.append('file', this.file);
       formData.append('content', this.text);
-      console.log(formData)
 
       axios({
         method: 'post',
@@ -33,15 +33,22 @@ Vue.component('create-article', {
           'Content-Type': 'multipart/form-data',
         }
       })
-        .then(response => {
-          console.log(response);
-          // this.file = '';
-          // this.title = '';
-          // this.tags = '';
-          // this.text = '';
+        .then(({ data }) => {
+          // console.log(data);
+          this.file = '';
+          this.title = '';
+          this.tags = '';
+          this.text = '';
+          Swal.fire({
+            position: 'top-end',
+            type: 'success',
+            title: data.message,
+            showConfirmButton: false,
+            timer: 1500
+          })
         })
         .catch(err => {
-          console.log(err);
+          console.log(err.response.data);
         })
     }
   },
@@ -66,7 +73,7 @@ Vue.component('create-article', {
             <label for="tags" class="col-sm-2 col-form-label">Tags</label>
             <div class="col-sm-10">
               <div class="md-form mt-0">
-                <input-tag v-model="tags" placeholder></input-tag>
+                <input-tag v-model="tags"></input-tag>
               </div>
             </div>
           </div>
