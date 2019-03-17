@@ -99,7 +99,6 @@
         :edit-the-article="editCurrent"
         @updated="findNewArticles"
       >
-
       </edit-article>
 
       <my-article
@@ -302,6 +301,8 @@
         findArticleByTags(tag) {
 
         },
+
+        // Show Hide Content
         createNewArticle() {
           this.switchToNewArticle = true;
           this.mainContent = false;
