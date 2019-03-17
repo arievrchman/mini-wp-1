@@ -12,8 +12,7 @@ const tagsRouter = require('./routes/tags');
 
 const app = express();
 
-// let db_connection = process.env.DB_URL;
-let db_connection = 'mongodb://localhost/zapress';
+let db_connection = process.env.DB_URL;
 mongoose.connect(db_connection, { useNewUrlParser: true });
 mongoose.connection.once('open', () => console.log('DB Connected!')).on('error', (error) => console.log('connection error:', error));
 
