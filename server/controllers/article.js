@@ -3,7 +3,6 @@ const Tag = require('../models/tag');
 
 module.exports = {
   createArticle(req, res) {
-    // console.log(req.auth_user);
 
     let tags = req.body.tags.split(',');
     let arrayTag = [];
@@ -85,9 +84,12 @@ module.exports = {
       });
 
   },
+  
   findAllArticle(req, res) {
     Article
-      .find({}).sort([['created_at', 'descending']])
+      .find({})
+      .sort({ created_at: 'desc' })
+      .populate('author', '-password')
       .then(articles => {
         res.json(articles);
       })
@@ -95,19 +97,83 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+  
   findArticleById(req, res) {
     Article
-      .findById(req.params.id).sort('created_at')
-      .then(articles => {
-        res.json(articles);
+      .findById(req.params.id)
+      .populate('tags')
+      .populate('author')
+      .then(article => {
+        let tags = article.tags.map(tag => {
+          return tag.tagName
+        });
+        // console.log(article.tags);
+
+        let sendArticleToClient = {
+          id: article._id,
+          author: article.author.name,
+          title: article.title,
+          tags: tags,
+          content: article.content,
+          created_at: article.created_at,
+          featured_image: article.featured_image
+        }
+        res.json(sendArticleToClient);
       })
       .catch(err => {
         res.status(500).json(err);
       });
   },
+  
   updateArticle(req, res) {
-    Article
-      .findByIdAndUpdate(req.params.id, req.body, { new: true })
+    console.log(req.body);
+    let tags = req.body.tags.split(',');
+    let arrayTag = [];
+    let sendTags = [];
+    let img;
+
+    if (req.file) {
+      img = req.file.cloudStoragePublicUrl;
+    } else {
+      img = req.body.originalImg;
+    }
+
+    let genTags = tags.map(tag => {
+      return new Promise((resolve, reject) => {
+        Tag
+          .findOne({ tagName: tag })
+          .then(result => {
+            if (result) {
+              resolve(result);
+            } else {
+              return Tag.create({ tagName: tag })
+                .then(result => {
+                  resolve(result)
+                });
+            }
+          })
+          .catch(err => {
+            reject(err);
+          })
+      });
+    });
+
+    Promise
+      .all(genTags)
+      .then(tags => {
+        let tagId = tags.map(tag => {
+          return tag.id
+        });
+        let updateArticle = {
+          author: req.auth_user.id,
+          title: req.body.title,
+          content: req.body.content,
+          tags: tagId,
+          featured_image: img
+        };
+        return Article
+          .findByIdAndUpdate(req.params.id, updateArticle, { new: true })
+      })
       .then(article => {
         res.json({
           article,
@@ -118,6 +184,7 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+  
   deleteArticle(req, res) {
     Article
       .findByIdAndDelete(req.params.id)
@@ -131,6 +198,7 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+  
   filterArticleByTitle(req, res) {
     Article
       .find({
@@ -143,9 +211,20 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+  
   findAuthorArticle(req, res) {
-
+    Article
+      .find({ author: req.auth_user.id })
+      .sort({ created_at: 'desc' })
+      .populate('author', '-password')
+      .then(articles => {
+        res.json(articles);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
   },
+  
   findNewestArticle(req, res) {
     Article
       .find({})

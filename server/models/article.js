@@ -10,10 +10,12 @@ let articleSchema = new Schema({
     type: String,
     required: [true, 'title cannot be empty']
   },
-  tags: {
-    type: [ Schema.Types.ObjectId ],
-    ref: 'tag'
-  },
+  tags: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'tag'
+    }
+  ],
   content: {
     type: String,
     required: [true, 'content cannot be empty']

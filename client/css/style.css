@@ -1,8 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz');
 @import url('https://fonts.googleapis.com/css?family=ZCOOL+XiaoWei');
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 
 body {
   background-color: #fff;
+}
+
+.userbar {
+  font-size: 14px;
+  font-weight: 300;
+  color: grey;
 }
 
 .my-brand {
@@ -18,6 +25,10 @@ body {
   color: #000;
   font-family: 'Yanone Kaffeesatz', sans-serif;
   margin-bottom: 12px;
+}
+
+.title-page {
+  font-family: 'Montserrat', sans-serif;
 }
 
 .vue-input-tag-wrapper {
