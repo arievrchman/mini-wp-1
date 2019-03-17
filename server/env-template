@@ -1,0 +1,8 @@
+SECRET_KEY=your secret key
+CLIENT_ID=your credential ID
+GOOGLE_CLOUD_PROJECT=your grpoject ID
+CLOUD_BUCKET=your google bucket name
+DEFAULT=link for default pic
+DB_URL=your database url (atlas)
+KEY=your path file for keyfile.json
+NOT_FOUND=link for default post pic
