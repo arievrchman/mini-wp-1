@@ -26,6 +26,7 @@ Vue.component('article-filtered', {
   template: `
   <div class="container">
     <div class="my-5" style="width: 700px;">
+      <h6>Article Tagged In</h6>
       <h1 class="mb-5 font-weight-bold title-page">{{ tag }}</h1>
 
       <div

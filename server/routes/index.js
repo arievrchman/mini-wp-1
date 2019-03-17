@@ -7,9 +7,10 @@ routes.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+routes.post('/oauth', googleAuth, googleLogin);
+
 routes.post('/register', register);
 routes.post('/login', login);
-routes.post('/oauth', googleAuth, googleLogin);
 routes.get('/auth', zapAuth, checkUser);
 
 module.exports = routes;

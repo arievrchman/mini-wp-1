@@ -83,14 +83,17 @@ module.exports = {
         }
       })
       .then(user => {
+        console.log(user);
         let payload = {
           id: user._id,
           name: user.name,
-          email: user.email
+          email: user.email,
+          img: user.profile_picture,
         };
         let token = jwt.sign(payload, process.env.SECRET_KEY);
-        res.status(200).json({
-          access_token: token
+        res.json({
+          token,
+          message: 'successfully login'
         });
       })
       .catch(err => {

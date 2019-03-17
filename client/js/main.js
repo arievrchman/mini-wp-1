@@ -1,31 +1,10 @@
-// function initialize() {
-// gapi.load('auth2', function () {
-//   gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
-//     .then(() => {
-//       renderButton();
-//     });
-// });
-// }
-// function renderButton() {
-//   gapi.signin2.render('googleSignIn', {
-//     'scope': 'profile email',
-//     'width': 233,
-//     'height': 50,
-//     'longtitle': true,
-//     'onsuccess': onSuccess
-//   });
-// }
-// function onSuccess(googleUser) {
-//   console.log('Logged in as: ' + googleUser.getBasicProfile());
-//   console.log(googleUser.getAuthResponse().id_token);
-// }
-
 let baseUrl = 'http://localhost:3000';
 
 const app = new Vue({
   el: '#app',
   data: {
     isLogin: false,
+    currentUserLogin: {},
 
     modalIntro: true,
     modalLogin: false,
@@ -47,17 +26,17 @@ const app = new Vue({
     currentTag: '',
   },
   created() {
+    gapi.load('auth2', () => {
+      gapi.auth2.init({ client_id: '750481857208-pfh3eguvgcgee2rfbp0vklme5vdjno6b.apps.googleusercontent.com' })
+      .then(() => {
+        this.renderButton();
+      });
+    });
     if (localStorage.getItem('token')) {
       this.checkUser();
     }
   },
   mounted() {
-    gapi.load('auth2', () => {
-      gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
-        .then(() => {
-          this.renderButton();
-        });
-    });
     this.findTags();
     this.findNewArticles();
   },
@@ -71,10 +50,30 @@ const app = new Vue({
         'onsuccess': this.onSuccess
       });
     },
+
     onSuccess(googleUser) {
-      // console.log('Logged in as: ' + googleUser.getBasicProfile());
-      // console.log(googleUser.getAuthResponse().id_token);
+      let token = googleUser.getAuthResponse().id_token;
+      axios({
+        method: 'post',
+        url: baseUrl + '/oauth',
+        headers: { token }
+      })
+        .then(({ data }) => {
+          // console.log(data);
+          // $('#getStarted').modal('toggle');
+          localStorage.setItem('token', data.token);
+          this.isLogin = true;
+          this.checkUser();
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
     },
+
+    onFailure(err) {
+      console.log(err.response);
+    },
+
     submitLogin(payload) {
       // console.log(payload);
       this.isLogin = payload;
@@ -89,6 +88,7 @@ const app = new Vue({
       })
         .then(({ data }) => {
           // console.log(data);
+          this.currentUserLogin = data;
           this.isLogin = true;
           this.findMyArticles();
         })
@@ -97,7 +97,9 @@ const app = new Vue({
         });
     },
 
-    signOut() {
+    async signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      await auth2.signOut();
       localStorage.removeItem('token');
       this.isLogin = false;
       this.mainContent = true;

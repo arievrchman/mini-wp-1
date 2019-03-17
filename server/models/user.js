@@ -41,6 +41,7 @@ let userSchema = new Schema({
 
 userSchema.pre('save', function (next) {
   this.password = hash(this.password);
+  this.profile_picture = process.env.DEFAULT;
   next();
 });
 
