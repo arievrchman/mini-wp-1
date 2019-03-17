@@ -48,7 +48,11 @@ Vue.component('my-article', {
         .catch((err) => {
           console.log(err.response);
         });
-    }
+    },
+    strippedContent(val) {
+      let regex = /(<([^>]+)>)|&nbsp;|&quot;/ig;
+      return val.replace(regex, "");
+    },
   },
   computed: {
     computedArticle() {
@@ -78,13 +82,9 @@ Vue.component('my-article', {
         </div>
 
         <div class="col-lg-7">
-          
           <h3 class="font-weight-bold mb-3"><strong>{{ article.title }}</strong></h3>
-          
-          <p>{{ article.content | truncate(100) }}</p>
-          
+          <p>{{ strippedContent(article.content) | truncate(100) }}</p>
           <p>by <a><strong>{{ article.author.name }}</strong></a>, {{ formatDate(new Date(article.created_at)) }}</p>
-
           <div class="d-flex justify-content-around align-items-center">
             <a @click.prevent="toReadArticle(article)" class="btn-floating btn-sm btn-outline-grey btn-md"><i class="fas fa-book-open"></i> Read</a>
             <a @click.prevent="editArticle(article)" class="btn-floating btn-sm btn-outline-grey"><i class="fas fa-edit"></i> Edit</a>
@@ -92,8 +92,8 @@ Vue.component('my-article', {
           </div>
           <hr>
         </div>
+        
       </div>
-
     </div>
   </div>
   `

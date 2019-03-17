@@ -30,12 +30,24 @@ Vue.component('signup', {
           this.name = '';
           this.email = '';
           this.password = '';
+          Swal.fire({
+            position: 'top-end',
+            type: 'success',
+            title: data.message,
+            showConfirmButton: false,
+            timer: 1500
+          })
         })
         .catch((err) => {
-          console.log(err.response.data);
+          let error = err.response.data;
           this.name = '';
           this.email = '';
           this.password = '';
+          Swal.fire({
+            type: 'error',
+            title: 'Oops...',
+            text: error,
+          });
         });
     }
   },

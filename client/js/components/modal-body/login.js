@@ -24,8 +24,15 @@ Vue.component('login', {
           this.$emit('submit-login', true);
         })
         .catch(err => {
-          console.log(err.response.data.message);
-        })
+          let error = err.response.data.message;
+          this.email = '';
+          this.password = '';
+          Swal.fire({
+            type: 'error',
+            title: 'Oops...',
+            text: error,
+          });
+        });
     },
     backIntro() {
       this.$emit('backIntro', {

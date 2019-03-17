@@ -4,7 +4,7 @@ const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 
 const storage = new Storage({
   projectId,
-  keyFilename: './keyfile.json'
+  keyFilename: process.env.KEY
 });
 
 const bucket = storage.bucket(CLOUD_BUCKET);

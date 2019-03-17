@@ -61,7 +61,7 @@
         <nav class="nav text-center font-weight-bolder">
           <ul class="nav white lighten-4 py-1">
             <li v-for="(tag, index) in tags" :key="index" class="nav-item active">
-              <a class="nav-link text-muted" href="" @click.prevent="findArticleByTags(tag)">{{ tag.tagName }}</a>
+              <a class="nav-link text-muted" href="" @click.prevent="switchToTags(tag)">{{ tag.tagName }}</a>
             </li>
           </ul>
         </nav>
@@ -109,6 +109,13 @@
         @edit-article="editArticle"
         >
       </my-article>
+      
+      <article-filtered
+        v-show="switchToTagArticle"
+        :find-by-tag="filteredByTags"
+        :tag="currentTag"
+        @read-article="readArticle">
+      </article-filtered>
 
     </main>
 
@@ -147,208 +154,13 @@
   <script src="js/components/read-articles.js"></script>
   <script src="js/components/my-article.js"></script>
   <script src="js/components/edit-article.js"></script>
+  <script src="js/components/article-filtered.js"></script>
   <!-- Modal-body Components-->
   <script src="js/components/modal-body/intro.js"></script>
   <script src="js/components/modal-body/login.js"></script>
   <script src="js/components/modal-body/signup.js"></script>
 
-  <script>
-
-    // function initialize() {
-    // gapi.load('auth2', function () {
-    //   gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
-    //     .then(() => {
-    //       renderButton();
-    //     });
-    // });
-    // }
-    // function renderButton() {
-    //   gapi.signin2.render('googleSignIn', {
-    //     'scope': 'profile email',
-    //     'width': 233,
-    //     'height': 50,
-    //     'longtitle': true,
-    //     'onsuccess': onSuccess
-    //   });
-    // }
-    // function onSuccess(googleUser) {
-    //   console.log('Logged in as: ' + googleUser.getBasicProfile());
-    //   console.log(googleUser.getAuthResponse().id_token);
-    // }
-
-    let baseUrl = 'http://localhost:3000';
-
-    const app = new Vue({
-      el: '#app',
-      data: {
-        isLogin: false,
-
-        modalIntro: true,
-        modalLogin: false,
-        modalRegister: false,
-
-        mainContent: true,
-        switchToNewArticle: false,
-        switchToReadArticle: false,
-        switchToMyArticle: false,
-        switchToEditArticle: false,
-
-        tags: [],
-        newArticles: [],
-        currentArticle: {},
-        myArticles: [],
-        editCurrent: {}
-      },
-      created() {
-        if (localStorage.getItem('token')) {
-          this.checkUser();
-        }
-      },
-      mounted() {
-        // gapi.load('auth2', function () {
-        //   gapi.auth2.init({ client_id: '351774805751-aj60bvo38hn982qpavmohcuo9vgl4ih6.apps.googleusercontent.com' })
-        //     .then(() => {
-        //       renderButton();
-        //     });
-        // });
-        this.findTags();
-        this.findNewArticles();
-      },
-      methods: {
-        renderButton() {
-          gapi.signin2.render('googleSignIn', {
-            'scope': 'profile email',
-            'width': 233,
-            'height': 50,
-            'longtitle': true,
-            'onsuccess': onSuccess
-          });
-        },
-
-        submitLogin(payload) {
-          // console.log(payload);
-          this.isLogin = payload;
-          this.checkUser();
-        },
-
-        checkUser() {
-          axios({
-            method: 'get',
-            url: baseUrl + '/auth',
-            headers: { token: localStorage.getItem('token') }
-          })
-            .then(({ data }) => {
-              // console.log(data);
-              this.isLogin = true;
-              this.findMyArticles();
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        },
-
-        signOut() {
-          localStorage.removeItem('token');
-          this.isLogin = false;
-          this.mainContent = true;
-          this.switchToNewArticle = false;
-          this.switchToReadArticle = false;
-          this.switchToMyArticle = false;
-        },
-
-        findNewArticles() {
-          axios({
-            method: 'get',
-            url: baseUrl + '/articles/newest'
-          })
-            .then(({ data }) => {
-              // console.log(data);
-              this.newArticles = data;
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        },
-
-        findTags() {
-          axios({
-            method: 'get',
-            url: baseUrl + '/tags'
-          })
-            .then(({ data }) => {
-              // console.log(data);
-              this.tags = data;
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        },
-
-        findMyArticles() {
-          axios({
-            method: 'get',
-            url: baseUrl + '/articles/user',
-            headers: { token: localStorage.getItem('token') }
-          })
-            .then(({ data }) => {
-              this.myArticles = data;
-            })
-            .catch((err) => {
-              console.log(err.response);
-            });
-        },
-
-        findArticleByTags(tag) {
-
-        },
-
-        // Show Hide Content
-        createNewArticle() {
-          this.switchToNewArticle = true;
-          this.mainContent = false;
-          this.switchToMyArticle = false;
-          this.switchToReadArticle = false;
-          this.switchToEditArticle = false;
-        },
-
-        readArticle(article) {
-          this.currentArticle = article;
-
-          this.switchToReadArticle = true;
-          this.mainContent = false;
-          this.switchToMyArticle = false;
-          this.switchToEditArticle = false;
-        },
-
-        editArticle(payload) {
-          this.editCurrent = payload;
-
-          this.switchToEditArticle = true;
-          this.mainContent = false;
-          this.switchToNewArticle = false;
-          this.switchToMyArticle = false;
-          this.switchToReadArticle = false;
-        },
-
-        switchToHome() {
-          this.mainContent = true;
-          this.switchToNewArticle = false;
-          this.switchToReadArticle = false;
-          this.switchToMyArticle = false;
-          this.switchToEditArticle = false;
-        },
-
-        switchToMyLists() {
-          this.switchToMyArticle = true;
-          this.mainContent = false;
-          this.switchToNewArticle = false;
-          this.switchToReadArticle = false;
-          this.switchToEditArticle = false;
-        }
-
-      },
-    });
-  </script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>

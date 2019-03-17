@@ -26,10 +26,10 @@ Vue.component('home-section', {
     readArticle(article) {
       this.$emit('read-article', article);
     },
-    // strippedContent(val) {
-    //   let regex = /(<([^>]+)>)|&nbsp;|&quot;/ig;
-    //   return val.replace(regex, "");
-    // },
+    strippedContent(val) {
+      let regex = /(<([^>]+)>)|&nbsp;|&quot;/ig;
+      return val.replace(regex, "");
+    },
   },
   watch: {
     allArticles(val) {
@@ -55,7 +55,7 @@ Vue.component('home-section', {
               <div class="card-body">
                 <h4 class="card-title"><strong>{{ firstArticle.title }}</strong></h4>
                 <hr>
-                <p class="card-text" style="max-height: 100px;">{{ firstArticle.content | truncate(100) }}</p>
+                <p class="card-text" style="max-height: 100px;">{{ strippedContent(firstArticle.content) | truncate(100) }}</p>
                 <a @click.prevent="readArticle(firstArticle)" href="" class="black-text d-flex justify-content-end">
                   <h6>Read more <i class="fas fa-angle-double-right"></i></h6>
                 </a>
@@ -109,7 +109,7 @@ Vue.component('home-section', {
               <div class="card-body">
                 <h4 class="card-title"><strong>{{ fifthArticle.title }}</strong></h4>
                 <hr>
-                <p class="card-text">{{ fifthArticle.content | truncate(100) }}</p>
+                <p class="card-text">{{ strippedContent(fifthArticle.content) | truncate(100) }}</p>
                 <a @click.prevent="readArticle(fifthArticle)" href="" class="black-text d-flex justify-content-end">
                   <h6>Read more <i class="fas fa-angle-double-right"></i></h6>
                 </a>

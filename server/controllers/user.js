@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const compare = require('../helpers/bcrypt').comparePassword;
 
 module.exports = {
+
   register(req, res) {
     let newUser = {
       name: req.body.name,
@@ -30,6 +31,7 @@ module.exports = {
         }
       });
   },
+
   login(req, res) {
     User
       .findOne({ email: req.body.email })
@@ -62,6 +64,40 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+
+  googleLogin(req, res) {
+    let ticket = req.ticket;
+    let newUser = {
+      name: ticket.name,
+      email: ticket.email,
+      password: ticket.at_hash,
+      profile_picture: ticket.picture
+    };
+    User
+      .findOne({ email: ticket.email })
+      .then(response => {
+        if (!response) {
+          return User.create(newUser)
+        } else {
+          return response;
+        }
+      })
+      .then(user => {
+        let payload = {
+          id: user._id,
+          name: user.name,
+          email: user.email
+        };
+        let token = jwt.sign(payload, process.env.SECRET_KEY);
+        res.status(200).json({
+          access_token: token
+        });
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
+  },
+
   checkUser(req, res) {
     User
       .findOne({ email: req.auth_user.email })

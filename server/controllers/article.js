@@ -126,7 +126,7 @@ module.exports = {
   },
   
   updateArticle(req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     let tags = req.body.tags.split(',');
     let arrayTag = [];
     let sendTags = [];

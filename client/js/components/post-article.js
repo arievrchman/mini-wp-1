@@ -85,7 +85,7 @@ Vue.component('post-article', {
           </div>
 
           <div class="form-group row">
-            <label for="title" class="col-sm-2 col-form-label">Title</label>
+            <label for="title" class="col-sm-2 col-form-label">Post Image</label>
             <div class="col-sm-10">
               <div class="md-form mt-0">
                 <div class="input-group mb-3">

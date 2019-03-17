@@ -1,13 +1,13 @@
 var routes = require('express').Router();
 const { createArticle, findAllArticle, findArticleById, updateArticle, deleteArticle, filterArticleByTitle, findAuthorArticle, findNewestArticle } = require('../controllers/article');
-const auth = require('../middlewares/authenticate');
+const { zapAuth } = require('../middlewares/authenticate');
 const images = require('../helpers/images');
 
 // routes.get('/', findAllArticle);
 routes.get('/search', filterArticleByTitle);
 routes.get('/newest', findNewestArticle);
 
-routes.use(auth);
+routes.use(zapAuth);
 routes.get('/user', findAuthorArticle);
 routes.post('/', images.multer.single('file'), images.sendUploadToGCS, createArticle);
 routes.get('/:id', findArticleById);
