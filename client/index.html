@@ -28,8 +28,7 @@
         </a>
         <div class="collapse navbar-collapse">
           <div class="navbar-nav d-flex flex-column w-100">
-            <a v-if="!isLogin" class="nav-item nav-link align-self-end btn btn-md btn-outline-info rounded"
-              data-toggle="modal" data-target="#getStarted" href="#">
+            <a v-if="!isLogin" class="nav-item nav-link align-self-end btn btn-md btn-outline-info rounded" href="" onclick="toggleGetStartedModal()">
               <span style="text-transform: none; font-size: 13px;" class="px-3">Get Started</span>
             </a>
             <a v-else class="nav-link p-0 align-self-end dropdown-toggle" id="userDropDown" data-toggle="dropdown"
@@ -37,7 +36,7 @@
               <img :src="currentUserLogin.profile_picture" class="rounded-circle z-depth-0"
                 alt="avatar image" height="35">
             </a>
-            <div class="dropdown-menu dropdown-menu-right dropdown-secondary" aria-labelledby="userDropDown"
+            <div v-if="isLogin" class="dropdown-menu dropdown-menu-right dropdown-secondary" aria-labelledby="userDropDown"
               style="width: 100px;">
               <a class="dropdown-item" href="" @click.prevent="createNewArticle">
                 <span class="userbar">New Article</span>

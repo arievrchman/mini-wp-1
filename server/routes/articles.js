@@ -10,7 +10,7 @@ routes.get('/newest', findNewestArticle);
 routes.use(zapAuth);
 routes.get('/user', findAuthorArticle);
 routes.post('/', images.multer.single('file'), images.sendUploadToGCS, createArticle);
-routes.get('/:id', findArticleById);new
+routes.get('/:id', findArticleById);
 routes.put('/:id', images.multer.single('file'), images.sendUploadToGCS, updateArticle);
 routes.delete('/:id', deleteArticle);
 

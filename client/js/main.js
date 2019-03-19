@@ -60,7 +60,7 @@ const app = new Vue({
       })
         .then(({ data }) => {
           // console.log(data);
-          // $('#getStarted').modal('toggle');
+          $('#getStarted').modal('hide');
           localStorage.setItem('token', data.token);
           this.isLogin = true;
           this.checkUser();
@@ -229,3 +229,8 @@ const app = new Vue({
 
   },
 });
+
+function toggleGetStartedModal() {
+  event.preventDefault();
+  $('#getStarted').modal('show');
+}
