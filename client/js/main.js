@@ -27,7 +27,7 @@ const app = new Vue({
   },
   created() {
     gapi.load('auth2', () => {
-      gapi.auth2.init({ client_id: '750481857208-pfh3eguvgcgee2rfbp0vklme5vdjno6b.apps.googleusercontent.com' })
+      gapi.auth2.init({ client_id: '316867528758-3a0b1brrhcj9o5rnbam23o722e15d2j5.apps.googleusercontent.com' })
       .then(() => {
         this.renderButton();
       });
